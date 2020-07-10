@@ -61,15 +61,18 @@ module.exports = {
     //--  sentToEMAIL >> Aceess Token 
     sentToEmail : async (req ,res , next) =>{
 
-                var emailForget = req.body.emailForget
+                var emailForget = req.body.email
                 try {
                     db.connect(uri , op , (err, db_) =>{
                         db_.db('Admin_user').collection("user").findOne({"email" : emailForget} , (err , result) =>{
                                 if(err) {
                                     console.log("Error DB :",err)
                                     next(err)
+                                    
                                 }else {
                                     req.userId = result.username
+                                    req.Email =  result.email
+                                    console.log(result.username+":"+result.email+"NEXT")
                                     next()
                                 }
                         })
@@ -81,11 +84,13 @@ module.exports = {
                 }   
     },
     AccessTokenEmail : async (req, res , next) => {
+                        console.log("Accept TOKEN")
                         const payload = {
                             userId : req.userId , 
-                            email  : req.body.ForgetEmail , 
+                            email  : req.Email , 
                             atTime : new Date().getTime()
                         }
+                        console.log(payload)
                         var tokenForget = jwt.encode(payload ,SECRET)
                         var mailOp = {
                             from : "montree.pro98@gmai.com",
@@ -96,6 +101,13 @@ module.exports = {
                                 <p>Rest Password click urI origin</p>
                                 <p>URL : ${dot.CLIENT_LOCALHOST+"/resetpassword/"+tokenForget}</p>`
                             }
+                            var transporter = nodemailer.createTransport({
+                                service: 'gmail',
+                                auth: {
+                                  user: 'montree.pro98@gmail.com',
+                                  pass: 'qq0925103180'
+                                }
+                              });
                             transporter.sendMail(mailOp , (err , info) => {
                                 if(err) {
                                     console.log("Error mail :" ,err)

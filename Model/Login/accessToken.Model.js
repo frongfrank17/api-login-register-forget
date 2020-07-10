@@ -8,6 +8,7 @@ module.exports = {
             atTime : new Date().getTime()
         }
         var token = jwt.encode(payload ,SECRET)
-        res.status(200).json({ "accessToken" :  token })
+        res.status(200).json({"statusMessage" : true , "resultMessage" : "Accept Token " , "accessToken" : token  })
+     
     }
 }

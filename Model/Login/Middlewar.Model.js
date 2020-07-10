@@ -21,7 +21,7 @@ module.exports =  {
                                 req.userId = result.username
                                 next()
                             }else {
-                                res.json({"statusMessage" : false , "resultMessage" : err})
+                                res.status(200).json({"statusMessage" : false , "resultMessage" : err , "accessToken" : ""})
                             }
                         })
                     } catch (error) {
